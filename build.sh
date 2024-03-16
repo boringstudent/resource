@@ -20,14 +20,19 @@ generate_index() {
         content+="<a href=\"../\">../</a><br>"
     fi
 
-    # 遍历目录中的文件和文件夹，添加链接
+    # 遍历目录中的文件夹，添加链接
     local item
     for item in *; do
         if [[ -d $item ]]; then
             content+="<a href=\"$item/\">$item</a>/ (Directory)<br>"
             # 递归调用生成子目录的索引
             (cd "$item" && generate_index "$path/$item")
-        else
+        fi
+    done
+
+    # 遍历目录中的文件，添加链接
+    for item in *; do
+        if [[ ! -d $item ]]; then
             content+="<a href=\"$item\">$item</a><br>"
         fi
     done
