@@ -3,8 +3,10 @@ find -type d -execdir bash -c '
 generate_index() {
     local dir=$1
     local path=""
+    local clean_path=""
     if [[ "$dir" != "." ]]; then
         path="/$dir"
+        clean_path=$(echo "$path" | sed 's|^/repo||')
     fi
     local content="<html>
 <head>
@@ -12,7 +14,7 @@ generate_index() {
 <title>$dir</title>
 </head>
 <body>
-<h1>$path</h1>
+<h1>$clean_path</h1>
 <hr>"
     
     # 添加上级目录链接
