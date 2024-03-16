@@ -1,14 +1,7 @@
-#!/bin/bash
-
-
-# 在目录下生成 index.html 文件
-find "$SCRIPT_DIR" -type d -execdir bash -c '
-# 获取脚本所在的相对目录
-SCRIPT_DIR=$(dirname "$0")
-
+find -type d -execdir bash -c '
 # 生成目录索引的函数
 generate_index() {
-    local dir=$1
+    local dir=$(basename "$PWD")
     local content="<html>
 <head>
 <meta charset=\"utf-8\">
@@ -19,25 +12,24 @@ generate_index() {
 <hr>"
     
     # 添加上级目录链接
-    if [[ "$dir" != "$SCRIPT_DIR" ]]; then
-        content+="\n<a href=\"../\">../</a><br>"
+    if [[ "$dir" != "." ]]; then
+        content+="<a href=\"../\">../</a><br>"
     fi
 
     # 遍历目录中的文件和文件夹，添加链接
     local item
-    for item in "$dir"/*; do
-        item=${item##*/}
+    for item in *; do
         if [[ -d $item ]]; then
-            content+="\n<a href=\"$item/\">$item</a>/ (Directory)<br>"
+            content+="<a href=\"$item/\">$item</a>/ (Directory)<br>"
             # 递归调用生成子目录的索引
-            generate_index "$item"
+            (cd "$item" && generate_index)
         else
-            content+="\n<a href=\"$item\">$item</a><br>"
+            content+="<a href=\"$item\">$item</a><br>"
         fi
     done
 
-    content+="\n</body>
+    content+="</body>
 </html>"
-    echo "$content"
+    echo "$content" > index.html
 }
-generate_index "$0" > index.html' {} \;
+generate_index' \;
