@@ -2,7 +2,7 @@
 SCRIPT_DIR=$(dirname "$0")
 
 # 生成目录索引的函数
-function generate_index() {
+function generate_index {
     local dir=$1
     local content="<html>
 <head>
