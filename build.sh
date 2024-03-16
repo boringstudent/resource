@@ -9,7 +9,7 @@ generate_index() {
     local content="<html>
 <head>
 <meta charset=\"utf-8\">
-<title>$dir</title>
+<title>$dir - CrystalNekoの资源站</title>
 </head>
 <body>
 <h1>$path</h1>
