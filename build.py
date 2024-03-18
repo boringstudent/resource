@@ -9,13 +9,14 @@ template = '''
     </head>
     <body>
         <h1>{full_path} - CrystalNekoの资源站</h1>
-        </hr>
+        <hr>
+        <a href="../">../<a></br>
         {content}
     </body>
 </html>
 '''
 
-dir_template = '<a href="{dir_name}/index.html">{dir_name}</a></br>'
+dir_template = '<a href="{dir_name}/index.html">{dir_name} (dir)</a></br>'
 file_template = '<a href="{file_name}">{file_name}</a></br>'
 
 def generate_index_html(root_dir):
