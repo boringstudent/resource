@@ -1,4 +1,6 @@
 import os
+import json
+import hashlib
 
 # 读取模板内容
 template = '''
@@ -32,9 +34,24 @@ def generate_index_html(root_dir):
         for file_name in files:
             content += file_template.format(file_name=file_name)
 
+        # 生成info.json
+        info = {"files": [], "dirs": []}
+
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            with open(file_path, 'rb') as f:
+                file_content = f.read()
+                sha256_hash = hashlib.sha256(file_content).hexdigest()
+                info["files"].append({"name": file_name, "sha256": sha256_hash})
+
+        for dir_name in dirs:
+            info["dirs"].append({"name": dir_name})
+
+        with open(os.path.join(root, 'info.json'), 'w') as info_file:
+            json.dump(info, info_file, indent=4)
+
         index_content = template.format(full_path=full_path, content=content)
         with open(os.path.join(root, 'index.html'), 'w') as f:
             f.write(index_content)
 
 generate_index_html('.')
-
