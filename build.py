@@ -1,6 +1,7 @@
 import os
 import json
 import hashlib
+import markdown
 
 # 读取模板内容
 template = '''
@@ -11,6 +12,8 @@ template = '''
     </head>
     <body>
         <h1>{full_path} - CrystalNekoの资源站</h1>
+        <hr>
+        {info}
         <hr>
         <a href="../">../<a></br>
         {content}
@@ -49,6 +52,14 @@ def generate_index_html(root_dir):
 
         with open(os.path.join(root, 'info.json'), 'w') as info_file:
             json.dump(info, info_file, indent=4)
+
+        # 读取并转换info.md文件为HTML
+        info_md_path = os.path.join(root, 'info.md')
+        if os.path.exists(info_md_path):
+            with open(info_md_path, 'r', encoding='utf-8') as md_file:
+                info_md_content = md_file.read()
+                info_html_content = markdown.markdown(info_md_content)
+                content += '<div>{}</div>'.format(info_html_content)
 
         index_content = template.format(full_path=full_path, content=content)
         with open(os.path.join(root, 'index.html'), 'w') as f:
