@@ -1,12 +1,15 @@
 ## 模组信息
 名称:  HMCL_Launch
+
 id: hcml_launch
+
 加载器: Fabric
+
 版本: 1.20~1.20.4
-前置模组: [FabricAPI,ModMenu]
+
+前置模组: [Fabric API](https://modrinth.com/mod/fabric-api),[ModMenu](https://modrinth.com/mod/modmenu)
+
 协议: GPL-3
-## 相关链接
-无
 ## 模组介绍
 HMCL_Launch是一个用于启动HMCL的Fabric模组。
 ### 使用方法
