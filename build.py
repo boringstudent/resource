@@ -17,6 +17,8 @@ template = '''
         <hr>
         <a href="../">../</a><br>
         {content}
+        <hr>
+        <img src="http://this.website.com/cmoe?name=CrystalNeko" alt="CrystalNeko" />
     </body>
 </html>
 '''
