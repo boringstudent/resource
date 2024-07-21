@@ -18,7 +18,7 @@ template = '''
         <a href="../">../</a><br>
         {content}
         <hr>
-        <img src="http://this.website.com/cmoe?name=CrystalNeko" alt="CrystalNeko" />
+        <img src="https://moe-counter.glitch.me/get/@CrystalNeko" alt="CrystalNeko" />
     </body>
 </html>
 '''
