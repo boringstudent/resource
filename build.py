@@ -12,11 +12,16 @@ template = """
         <meta charset="utf-8">
         <title>{full_path} - CrystalNekoの资源站</title>
         <style>
-            body {{
+            html, body {{
                 margin: 0;
-                padding: 20px;
-                background: url('https://www.loliapi.com/acg') fixed;
+                padding: 0;
+                height: 100%;
+                min-height: 100vh;
                 background-size: cover;
+                background-position: center;
+            }}
+            body {{
+                background: url('https://www.loliapi.com/acg') fixed;
                 font-family: Arial, sans-serif;
             }}
             .container {{
@@ -95,7 +100,6 @@ file_template = """
     <span>📄 {file_name}</span>
     <span class="file-info">
         <span>{size}</span>
-        <span>{mtime}</span>
     </span>
 </a>
 """
@@ -119,9 +123,10 @@ def format_size(size):
 
 def copy_files(source_dir, output_dir):
     """将非隐藏文件/目录复制到output目录"""
+    exclude_dir = os.path.basename(output_dir)  # 获取要排除的目录名
     for root, dirs, files in os.walk(source_dir):
-        # 排除隐藏目录
-        dirs[:] = [d for d in dirs if not d.startswith('.')]
+        # 排除隐藏目录和输出目录
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d != exclude_dir]
         # 排除隐藏文件
         files = [f for f in files if not f.startswith('.')]
 
@@ -156,11 +161,9 @@ def generate_index_html(root_dir):
             if file_name not in ['index.html', 'info.json', 'info.md']:
                 file_path = os.path.join(root, file_name)
                 file_size = format_size(os.path.getsize(file_path))
-                mtime = datetime.datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
                 content += file_template.format(
                     file_name=file_name,
-                    size=file_size,
-                    mtime=mtime
+                    size=file_size
                 )
 
         # 生成info.json
@@ -169,14 +172,12 @@ def generate_index_html(root_dir):
             if file_name not in ['index.html', 'info.json', 'info.md']:
                 file_path = os.path.join(root, file_name)
                 file_size = os.path.getsize(file_path)
-                mtime = datetime.datetime.fromtimestamp(os.path.getmtime(file_path)).strftime('%Y-%m-%d %H:%M:%S')
                 with open(file_path, 'rb') as f:
                     sha256_hash = hashlib.sha256(f.read()).hexdigest()
                 info["files"].append({
                     "name": file_name,
                     "sha256": sha256_hash,
-                    "size": file_size,
-                    "mtime": mtime
+                    "size": file_size
                 })
         for dir_name in dirs:
             dir_path = os.path.join(root, dir_name)
@@ -212,11 +213,13 @@ if __name__ == "__main__":
     source_dir = '.'  # 源目录
     output_dir = 'output'  # 输出目录
 
-    # 创建output目录
+    # 创建output目录前先删除已存在的目录（关键修复）
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)
     os.makedirs(output_dir, exist_ok=True)
 
     # 复制文件到output目录
     copy_files(source_dir, output_dir)
 
-    # 生成索引文件（以output目录为根）
+    # 生成索引文件
     generate_index_html(output_dir)
